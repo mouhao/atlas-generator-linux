@@ -109,7 +109,134 @@ make
 
 ### 配置文件
 
-你也可以通过配置文件来设置打包参数，参考项目中的`atlasConfig`文件。
+你也可以通过配置文件来设置打包参数，参考项目中的`atlasConfig`文件。以下是配置文件的详细说明：
+
+### 1. atlas 部分（图集相关配置）
+```json
+"atlas": {
+    "POT": false,           // Power of Two，是否强制输出图集尺寸为2的幂
+    "pixelFormat": "ARGB32",// 像素格式，这里是32位ARGB
+    "quality": -1,          // 输出质量，-1表示使用默认值
+    "size": 2048,          // 最大图集尺寸
+    "textureFormat": "PNG"  // 输出图片格式
+}
+```
+
+### 2. sprite 部分（精灵图相关配置）
+```json
+"sprite": {
+    "cropAlpha": true,      // 是否裁剪透明区域
+    "extrude": 1,          // 边缘扩展像素数
+    "padding": 1,          // 精灵图之间的间距
+    "rotation": false,      // 是否允许旋转图片以获得更好的装箱效果
+    "size": 1024           // 单个精灵的最大尺寸
+}
+```
+
+### 3. 目录配置
+```json
+"inputDir": "/path/to/assets",  // 输入目录
+"outputDir": "/path/to/out",    // 输出目录
+"resDir": "/path/to/res",       // 资源目录
+```
+
+### 4. 文件列表配置
+```json
+"excludeList": [            // 排除列表，这些文件/目录不会被打包
+    "comp/subdir"
+],
+"includeList": [            // 包含列表，这些文件会被强制包含
+    "comp/image.png"
+],
+```
+
+### 5. 其他配置
+```json
+"force": true,              // 是否强制重新打包所有文件
+```
+
+## 配置文件使用指南
+
+### 基本使用步骤
+
+1. 创建配置文件：
+   ```bash
+   cp atlasConfig /path/to/your/config
+   ```
+
+2. 修改配置文件中的路径：
+   ```json
+   {
+       "inputDir": "你的源文件目录",
+       "outputDir": "输出目录",
+       "resDir": "资源目录"
+   }
+   ```
+
+3. 运行程序：
+   ```bash
+   ./atlas_generator -c /path/to/your/config
+   ```
+
+### 常见配置场景
+
+1. **优化图集大小**：
+   ```json
+   {
+       "atlas": {
+           "POT": true,         // 使用2的幂尺寸
+           "size": 1024,        // 降低最大尺寸
+           "quality": 80        // 适当压缩
+       }
+   }
+   ```
+
+2. **优化精灵图**：
+   ```json
+   {
+       "sprite": {
+           "cropAlpha": true,   // 裁剪透明区域
+           "rotation": true,    // 允许旋转以获得更好的装箱
+           "padding": 2         // 增加间距防止边缘出现问题
+       }
+   }
+   ```
+
+3. **文件过滤**：
+   ```json
+   {
+       "excludeList": [
+           "temp/",
+           "draft/",
+           "*.psd"
+       ],
+       "includeList": [
+           "special/large-image.png"
+       ]
+   }
+   ```
+
+### 使用建议
+
+1. **性能优化**：
+   - 设置合适的 `atlas.size`，太大会影响加载性能
+   - 使用 `sprite.cropAlpha` 减少空白区域
+   - 适当使用 `sprite.padding` 防止精灵图之间互相干扰
+
+2. **质量控制**：
+   - 对于重要的UI元素，可以调高 `quality`
+   - 使用 `extrude` 防止图片边缘产生瑕疵
+   - 需要高质量时使用 `ARGB32` 格式
+
+3. **文件管理**：
+   - 使用 `excludeList` 排除临时文件和开发资源
+   - 使用 `includeList` 确保关键资源被包含
+   - 定期使用 `"force": true` 完全重新打包
+
+4. **调试技巧**：
+   - 先用小数据集测试配置
+   - 观察输出日志了解处理过程
+   - 检查生成的图集质量
 
 ## 工作流程
 

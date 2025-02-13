@@ -1,0 +1,26 @@
+{
+    "atlas": {
+        "POT": false,
+        "pixelFormat": "ARGB32",
+        "quality": -1,
+        "size": 2048,
+        "textureFormat": "PNG"
+    },
+    "excludeList": [
+    "comp/subdir"
+    ],
+    "force": true,
+    "includeList": [
+    "comp/image.png"
+    ],
+    "inputDir": "/Users/survivor/Downloads/assets",
+    "outputDir": "/Users/survivor/Downloads/out",
+    "resDir": "/Users/survivor/Downloads/res",
+    "sprite": {
+        "cropAlpha": true,
+        "extrude": 1,
+        "padding": 1,
+        "rotation": false,
+        "size": 1024
+    }
+}

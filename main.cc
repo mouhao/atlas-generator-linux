@@ -247,10 +247,60 @@ void PackDirectories()
 void ProcessFile(QFileInfo &file_info, vector<QDir> &directories)
 {
     QString file_path = file_info.filePath();
-    // 检查到目录
+    // 检查到目录，立即处理该目录
     if (file_info.isDir())
-        directories.push_back(QDir(file_path));
-        // 检查到常规文件
+    {
+        QDir dir(file_path);
+        imagesInCurrentDirectory.clear();
+
+        recordSStream << "D " << file_utils::GetRelativeToInputDirectoryPath(dir.path()).toStdString() << '\n';
+        cout << "DIRECTORY " << dir.path().toStdString() << '\n';
+
+        // 检查目录是否被用户排除
+        if (Configuration::IsExclude(QFileInfo(dir.path())))
+        {
+            cout << "EXCLUDE " << dir.absolutePath().toStdString() << "\n";
+            file_utils::CopyToResourceDirectory(dir.path());
+            return;
+        }
+
+        // 在record中找到这个目录的记录（可能没有记录）
+        for(auto &item : record)
+        {
+            if(item.first == file_utils::GetRelativeToInputDirectoryPath(dir.path()))
+            {
+                processingDirRecordItems = item.second;
+                break;
+            }
+        }
+
+        // 处理指定目录下所有文件
+        QFileInfoList file_list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+        AtlasPacker atlas_packer;
+
+        for (QFileInfo &sub_file_info : file_list)
+            ProcessFile(sub_file_info, directories);
+
+        if(needRepack())
+        {
+            cout << "directory has been changed\n";
+            for(auto &image : imagesInCurrentDirectory)
+            {
+                atlas_packer.AddImage(std::get<0>(image), std::get<1>(image));
+            }
+        }
+        else
+        {
+            cout << "directory has not changes\n";
+        }
+
+        // 重置目录记录为空指针，否则下次未找到记录时会使用上次的目录记录
+        processingDirRecordItems = nullptr;
+        cout << "\n";
+
+        GenerateAtlas(atlas_packer, dir);
+    }
+    // 检查到常规文件
     else
         ProcessRegularFile(file_path);
 }

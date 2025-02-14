@@ -248,11 +248,21 @@ void ProcessFile(QFileInfo &file_info, vector<QDir> &directories)
 {
     QString file_path = file_info.filePath();
     // 检查到目录
-    if (file_info.isDir())
+    if (file_info.isDir()) {
+        // 将目录加入队列
         directories.push_back(QDir(file_path));
-        // 检查到常规文件
-    else
+        
+        // 递归处理子目录中的文件
+        QDir subDir(file_path);
+        QFileInfoList subFiles = subDir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+        for (QFileInfo &subFileInfo : subFiles) {
+            ProcessFile(subFileInfo, directories);
+        }
+    }
+    // 检查到常规文件
+    else {
         ProcessRegularFile(file_path);
+    }
 }
 
 /**

@@ -1,10 +1,14 @@
 # Atlas Generator
 
-LayaAir Atlas Generator 可以在Linux下编译
-Frok from https://gitlab.com/hyzmm/atlas-generator
+LayaAir Atlas Generator
+Froked from https://gitlab.com/hyzmm/atlas-generator
 
 ## 简介
-这是一个基于Qt的图集生成器，可以将多个图片打包成一个图集（Atlas/Sprite Sheet），并生成相应的数据文件。该工具支持多种矩形打包算法，可以自动选择最优的打包方案。
+这是LayaAir官方开源的项目。一个基于Qt的图集生成器，可以将多个图片打包成一个图集（Atlas/Sprite Sheet），并生成相应的数据文件。该工具支持多种矩形打包算法，可以自动选择最优的打包方案。
+
+但是开源的代码太久远，在linux下编译后，使用命令后，对二级目录的图片有bug。
+
+本项目试图修正了这个bug。
 
 ### 项目功能
 这是一个图集生成器（Atlas Generator），主要用于：
